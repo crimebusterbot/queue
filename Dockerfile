@@ -15,5 +15,4 @@ RUN pip3 install pip --upgrade --force-reinstall \
 ADD . /app
 # set environment variables
 # RUN python3 set_env.py
-#RUN environments/local.env
 CMD ["gunicorn", "app:app", "--bind", "0:8081"]
