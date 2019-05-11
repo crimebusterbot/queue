@@ -1,20 +1,31 @@
 #!/usr/bin/env python3
 
-from flask_api import FlaskAPI, jsonify
+import base64
+import logging
 
-from .queue import Queuer
+import requests
+
+from flask_api import FlaskAPI
+from flask import jsonify, request
+
+from queuer import Queuer
 
 
 app = FlaskAPI(__name__)
 
 
-@app.route("/api/v1/queue", methods=['POST'])
-def queue():
-    urls = request.get_json()
+@app.route("/api/v1/queuer/", methods=['POST'])
+def process_queue():
+    # checks for 'urls' key in json
+    urls = request.data
     q = Queuer(urls)
     q.process_queue()
     return jsonify({})
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5055)
+    app.run(
+        debug=True,
+        host='0.0.0.0',
+        port=5055,
+    )

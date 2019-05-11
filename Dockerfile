@@ -1,5 +1,7 @@
 FROM python:3.5
 ENV PYTHONUNBUFFERED 1
+ENV USERNAME queue
+ENV PASSWORD 4J7o!ZFW^6
 RUN apt-get update && \
     apt-get upgrade -qy && \
     apt-get install -qy \
@@ -14,6 +16,5 @@ WORKDIR /app
 RUN pip3 install pip --upgrade --force-reinstall \
     && pip3 install -r /app/requirements.txt
 ADD . /app
-# set environment variables
-# RUN python3 set_env.py
-CMD ["gunicorn", "app:app", "--bind", "0:8081"]
+EXPOSE 5055
+CMD ["python3", "app.py"]

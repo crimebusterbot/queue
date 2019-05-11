@@ -3,6 +3,7 @@
 import base64
 import logging
 
+import decouple
 import requests
 
 
@@ -18,6 +19,10 @@ import requests
 #     },
 #     "screenshot": "https://f002.backblazeb2.com/file/crimebusterbot/sidnfonds-8a75.png"
 # }
+
+
+USERNAME = decouple.config('USERNAME')
+PASSWORD = decouple.config('PASSWORD')
 
 
 class Queuer:

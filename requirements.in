@@ -4,5 +4,6 @@ pytest-django
 pytest-mock
 pytest-pep8
 pytest
+python-decouple
 requests>=2.20.0
 urllib3>=1.24.2
