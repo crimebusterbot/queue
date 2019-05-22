@@ -37,7 +37,12 @@ class Queuer:
 
     def process_queue(self):
         for url in self.urls:
-            self._check_webshop(url)
+            print('Checking %s' % url)
+            check = self._check_webshop(url)
+            if check:
+                print('Check successful')
+            else:
+                print('Error: Something is wrong')
 
         return
 
@@ -46,7 +51,9 @@ class Queuer:
         resp = requests.post(self.check_url,
                              data=data,
                              headers=self._set_headers())
+        print('Get status code from checker: %s' % resp.status_code)
         if resp.status_code in (200, 201):
+            print('Response from checker: %s' % resp.json())
             return True
 
         return

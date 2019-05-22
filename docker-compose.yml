@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+
+    queue-api:
+        container_name: queue-api
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: queue-api-image
+        volumes:
+            - .:/app
+        env_file:
+            - ./environments/local.env
+        ports:
+            - "5055:5055"
