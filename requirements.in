@@ -1,5 +1,6 @@
 flask
 flask-api
+jwt
 pytest-django
 pytest-mock
 pytest-pep8
