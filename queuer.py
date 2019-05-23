@@ -1,9 +1,11 @@
 #!/bin/env python3
 
 import base64
+import json
 import logging
 
 import decouple
+import jwt
 import requests
 
 
@@ -21,8 +23,13 @@ import requests
 # }
 
 
-USERNAME = decouple.config('USERNAME')
+ACCESS_TOKEN = decouple.config('ACCESS_TOKEN')
+ACCESS_URL = decouple.config('ACCESS_URL')
+# FIXME: implement obtaining `api-key`
+API_KEY = decouple.config('API_KEY')
+CHECK_URL = decouple.config('CHECK_URL')
 PASSWORD = decouple.config('PASSWORD')
+USERNAME = decouple.config('USERNAME')
 
 
 class Queuer:
@@ -33,32 +40,54 @@ class Queuer:
 
     def __init__(self, urls):
         self.urls = urls
-        self.check_url = 'https://webshop-checker.nl/webshop/check/'
 
     def process_queue(self):
         for url in self.urls:
             print('Checking %s' % url)
-            check = self._check_webshop(url)
-            if check:
-                print('Check successful')
+            score = self._get_score(url)
+            if score:
+                print('Score of {0} is {1}'.format(url, score))
             else:
                 print('Error: Something is wrong')
 
         return
 
-    def _check_webshop(self, url):
+    def _get_score(self, url):
         data = {'url': url}
-        resp = requests.post(self.check_url,
-                             data=data,
-                             headers=self._set_headers())
-        print('Get status code from checker: %s' % resp.status_code)
+        headers = {
+            'api-key': API_KEY,
+            'x-access-token': self._get_access_token(),
+            'content-type': 'application/json',
+        }
+        resp = requests.post(CHECK_URL,
+                             data=json.dumps(data),
+                             headers=headers)
         if resp.status_code in (200, 201):
-            print('Response from checker: %s' % resp.json())
-            return True
+            score_dict = resp.json().get('score')
+            # for this to work, the values must be numbers, not strings
+            return max(score_dict.items(), key=lambda k: k[1])
 
         return
 
-    def _set_headers(self):
-        login_b64 = base64.b64encode(
-            '{}:{}'.format(USERNAME, PASSWORD).encode('utf-8'))
-        return {'Authorization': 'Basic {}'.format(login_b64)}
+    def _get_access_token(self):
+        # TODO: implement checking expiration date of the JWT
+        data = {
+            'username': USERNAME,
+            'password': PASSWORD,
+        }
+        headers = {
+            'api-key': API_KEY,
+            'content-type': 'application/json',
+        }
+        resp = requests.post(ACCESS_URL,
+                             data=json.dumps(data),
+                             headers=headers)
+        if resp.status_code in (200, 201):
+            print('Obtained access token. Status code: {}'.format(
+                resp.status_code))
+            ACCESS_TOKEN = resp.json().get('token')
+            return ACCESS_TOKEN
+
+        print('Cannot obtain access token. Status code: {}'.format(
+              resp.status_code))
+        return
