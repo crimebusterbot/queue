@@ -3,10 +3,13 @@
 import base64
 import json
 import logging
+import os
 
 import decouple
-import jwt
 import requests
+import sqlite3 as sql
+
+import utils
 
 
 # response from checker:
@@ -29,6 +32,7 @@ ACCESS_URL = decouple.config('ACCESS_URL')
 API_KEY = decouple.config('API_KEY')
 CHECK_URL = decouple.config('CHECK_URL')
 PASSWORD = decouple.config('PASSWORD')
+Q_FILE_NAME = decouple.config('QUEUEING_URLS_FILE_NAME')
 USERNAME = decouple.config('USERNAME')
 
 
@@ -38,17 +42,34 @@ class Queuer:
     logger = logging.getLogger('cbb.queue')
     logger.setLevel(logging.DEBUG)
 
-    def __init__(self, urls):
-        self.urls = urls
+#    def __init__(self):
+#        self.urls = self._read_urls_file(Q_FILE_NAME)
 
     def process_queue(self):
-        for url in self.urls:
+
+        with sql.connect('urls.db') as con:
+            cur = con.cursor()
+            cur.execute('SELECT url FROM url_table LIMIT 1')
+            # fetchone() returns a tuple
+            url = cur.fetchone()
+            if not url:
+                print('DB is empty')
+                return
+
+            try:
+                cur.execute('DELETE FROM url_table WHERE url=\'' + url[0] + '\'')
+                con.commit()
+                print('Record successfully deleted')
+            except sql.OperationalError:
+                print('Rolling back deletion ...')
+                cur.rollback()
+
             print('Checking %s' % url)
             score = self._get_score(url)
             if score:
-                print('Score of {0} is {1}'.format(url, score))
+                print('Score of {0} is {1}'.format(url[0], score))
             else:
-                print('Error: Something is wrong')
+                print('Error: Something is wrong', url[0], score)
 
         return
 
@@ -62,6 +83,7 @@ class Queuer:
         resp = requests.post(CHECK_URL,
                              data=json.dumps(data),
                              headers=headers)
+        print('response: %s' % resp.json())
         if resp.status_code in (200, 201):
             score_dict = resp.json().get('score')
             # for this to work, the values must be numbers, not strings

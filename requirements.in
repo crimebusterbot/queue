@@ -1,6 +1,6 @@
 flask
 flask-api
-jwt
+flask-apscheduler
 pytest-django
 pytest-mock
 pytest-pep8
