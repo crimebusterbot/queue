@@ -4,36 +4,82 @@
 #
 #    pip-compile requirements.in
 #
-apipkg==1.5               # via execnet
-apscheduler==3.6.0        # via flask-apscheduler
-atomicwrites==1.3.0       # via pytest
-attrs==19.1.0             # via pytest
-certifi==2019.3.9         # via requests
-chardet==3.0.4            # via requests
-click==7.0                # via flask
-execnet==1.6.0            # via pytest-cache
+apipkg==1.5
+    # via execnet
+apscheduler==3.6.0
+    # via flask-apscheduler
+atomicwrites==1.3.0
+    # via pytest
+attrs==19.1.0
+    # via pytest
+certifi==2019.3.9
+    # via requests
+chardet==3.0.4
+    # via requests
+click==7.0
+    # via flask
+execnet==1.6.0
+    # via pytest-cache
 flask-api==1.1
+    # via -r requirements.in
 flask-apscheduler==1.11.0
+    # via -r requirements.in
 flask==1.0.2
-idna==2.8                 # via requests
-itsdangerous==1.1.0       # via flask
-jinja2==2.10.1            # via flask
-markupsafe==1.1.1         # via jinja2
-more-itertools==7.0.0     # via pytest
-pathlib2==2.3.3           # via pytest
-pep8==1.7.1               # via pytest-pep8
-pluggy==0.11.0            # via pytest
-py==1.8.0                 # via pytest
-pytest-cache==1.0         # via pytest-pep8
+    # via
+    #   -r requirements.in
+    #   flask-api
+    #   flask-apscheduler
+idna==2.8
+    # via requests
+itsdangerous==1.1.0
+    # via flask
+jinja2==2.11.3
+    # via flask
+markupsafe==1.1.1
+    # via jinja2
+more-itertools==7.0.0
+    # via pytest
+pep8==1.7.1
+    # via pytest-pep8
+pluggy==0.11.0
+    # via pytest
+py==1.8.0
+    # via pytest
+pytest-cache==1.0
+    # via pytest-pep8
 pytest-django==3.4.8
+    # via -r requirements.in
 pytest-mock==1.10.4
+    # via -r requirements.in
 pytest-pep8==1.0.6
+    # via -r requirements.in
 pytest==4.4.2
-python-dateutil==2.8.0    # via flask-apscheduler
+    # via
+    #   -r requirements.in
+    #   pytest-cache
+    #   pytest-django
+    #   pytest-mock
+    #   pytest-pep8
+python-dateutil==2.8.0
+    # via flask-apscheduler
 python-decouple==3.1
-pytz==2019.1              # via apscheduler, tzlocal
+    # via -r requirements.in
+pytz==2019.1
+    # via
+    #   apscheduler
+    #   tzlocal
 requests==2.21.0
-six==1.12.0               # via apscheduler, pathlib2, pytest, python-dateutil
-tzlocal==1.5.1            # via apscheduler
+    # via -r requirements.in
+six==1.12.0
+    # via
+    #   apscheduler
+    #   pytest
+    #   python-dateutil
+tzlocal==1.5.1
+    # via apscheduler
 urllib3==1.24.3
-werkzeug==0.15.2          # via flask
+    # via
+    #   -r requirements.in
+    #   requests
+werkzeug==0.15.2
+    # via flask
